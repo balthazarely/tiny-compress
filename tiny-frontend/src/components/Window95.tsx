@@ -3,9 +3,10 @@ import type { ReactNode } from "react";
 interface Window95Props {
   title: string;
   children: ReactNode;
+  onClose?: () => void;
 }
 
-export function Window95({ title, children }: Window95Props) {
+export function Window95({ title, children, onClose }: Window95Props) {
   return (
     <div
       style={{
@@ -25,45 +26,72 @@ export function Window95({ title, children }: Window95Props) {
         }}
       >
         <span className="text-xs font-bold">{title}</span>
-        <div className="flex gap-0">
+        <div className="flex gap-1" style={{ marginRight: "2px" }}>
           <button
-            className="w-5 h-5 flex items-center justify-center"
             style={{
+              width: "16px",
+              height: "14px",
               backgroundColor: "#c0c0c0",
               border: "1px solid",
-              borderColor: "#dfdfdf #808080",
-              fontSize: "10px",
+              borderColor: "#dfdfdf #808080 #808080 #dfdfdf",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+              fontWeight: "bold",
+              padding: "0",
+              color: "#000000",
+              cursor: "pointer",
             }}
           >
-            _
+            −
           </button>
           <button
-            className="w-5 h-5 flex items-center justify-center"
             style={{
+              width: "16px",
+              height: "14px",
               backgroundColor: "#c0c0c0",
               border: "1px solid",
-              borderColor: "#dfdfdf #808080",
-              fontSize: "10px",
+              borderColor: "#dfdfdf #808080 #808080 #dfdfdf",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+              fontWeight: "bold",
+              padding: "0",
+              color: "#000000",
+              cursor: "pointer",
             }}
           >
             □
           </button>
           <button
-            className="w-5 h-5 flex items-center justify-center"
+            onClick={onClose}
             style={{
+              width: "16px",
+              height: "14px",
               backgroundColor: "#c0c0c0",
               border: "1px solid",
-              borderColor: "#dfdfdf #808080",
-              fontSize: "10px",
+              borderColor: "#dfdfdf #808080 #808080 #dfdfdf",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+              fontWeight: "bold",
+              padding: "0",
+              color: "#000000",
+              cursor: "pointer",
             }}
           >
-            ✕
+            ×
           </button>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-4">{children}</div>
+      <div className="p-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 80px)" }}>
+        {children}
+      </div>
     </div>
   );
 }

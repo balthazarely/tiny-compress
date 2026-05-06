@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 interface FileSelectorProps {
   selectedFile: File | null;
   format: string;
@@ -15,6 +17,20 @@ export function FileSelector({
   onFormatChange,
   onQualityChange,
 }: FileSelectorProps) {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewUrl(e.target?.result as string);
+      };
+      reader.readAsDataURL(selectedFile);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [selectedFile]);
+
   return (
     <div className="space-y-4">
       {/* File Input */}
@@ -43,8 +59,18 @@ export function FileSelector({
             border: "1px solid",
             borderColor: "#808080 #dfdfdf",
             padding: "4px",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
           }}
         >
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              style={{ width: "40px", height: "40px", objectFit: "cover" }}
+            />
+          )}
           <span className="text-xs">✓ {selectedFile.name}</span>
         </div>
       )}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useCompress() {
+export function useCompress(userId: string) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
@@ -11,6 +11,8 @@ export function useCompress() {
       formData.append("file", file);
       formData.append("format", format);
       formData.append("quality", quality.toString());
+      formData.append("filename", file.name);
+      formData.append("userId", userId);
 
       const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/compress`, {

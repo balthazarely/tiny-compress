@@ -1,12 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCompress } from "./hooks/useApi";
 import { Window95 } from "./components/Window95";
 import { Button95 } from "./components/Button95";
 import { FileSelector } from "./components/FileSelector";
 import { ResultDisplay } from "./components/ResultDisplay";
+import { History } from "./components/History";
+import { useHistory } from "./hooks/useHistory";
+import type { HistoryItem } from "./components/History";
+import { getOrCreateUserId } from "./utils/userId";
 
 function App() {
-  const { compress, isLoading } = useCompress();
+  const [userId] = useState(getOrCreateUserId());
+  const { compress, isLoading } = useCompress(userId);
+  const { getHistory, history } = useHistory(userId);
+
+  useEffect(() => {
+    getHistory();
+  }, [userId]);
+
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [result, setResult] = useState<any>(null);
   const [format, setFormat] = useState("webp");
@@ -27,6 +38,7 @@ function App() {
     }
     const response = await compress(selectedFile, format, quality);
     setResult(response);
+    getHistory();
   }
 
   function handleDownload() {
@@ -40,19 +52,43 @@ function App() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `compressed.${format}`;
+    a.download = result.filename;
     a.click();
     URL.revokeObjectURL(url);
   }
 
+  function handleReset() {
+    setSelectedFile(null);
+    setResult(null);
+    setFormat("webp");
+    setQuality(75);
+    setCompressPressed(false);
+    setDownloadPressed(false);
+  }
+
+  function handleSelectFromHistory(item: HistoryItem) {
+    const binary = atob(item.file);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    const blob = new Blob([bytes]);
+    const file = new File([blob], item.filename);
+    setSelectedFile(file);
+    setResult(null);
+  }
+
   return (
     <div
-      className="min-h-screen bg-cyan-400"
-      style={{ fontFamily: "MS Sans Serif, Arial, sans-serif" }}
+      className="h-screen overflow-hidden"
+      style={{
+        fontFamily: "MS Sans Serif, Arial, sans-serif",
+        background: "#268786",
+      }}
     >
-      <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="flex items-center justify-center h-screen p-4">
         <div className="w-full max-w-md">
-          <Window95 title="Image Compressor">
+          <Window95 title="Image Compressor" onClose={handleReset}>
             <div className="space-y-4">
               {/* File Selector Component */}
               <FileSelector
@@ -80,6 +116,7 @@ function App() {
               {result && (
                 <ResultDisplay
                   result={result}
+                  isLoading={isLoading}
                   onDownloadClick={handleDownload}
                   downloadPressed={downloadPressed}
                   onDownloadMouseDown={() => setDownloadPressed(true)}
@@ -87,6 +124,7 @@ function App() {
                   onDownloadMouseLeave={() => setDownloadPressed(false)}
                 />
               )}
+              <History items={history} onSelectImage={handleSelectFromHistory} />
             </div>
           </Window95>
         </div>
