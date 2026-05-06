@@ -7,26 +7,30 @@ const fastify = Fastify({
   logger: true,
 });
 
-// Middleware
-await fastify.register(cors, { origin: true });
-await fastify.register(multipart, {
-  limits: {
-    fileSize: 50 * 1024 * 1024, // 50MB
-  },
-});
+async function start() {
+  // Middleware
+  await fastify.register(cors, { origin: true });
+  await fastify.register(multipart, {
+    limits: {
+      fileSize: 50 * 1024 * 1024, // 50MB
+    },
+  });
 
-// GET / route (health check)
-fastify.get("/", async (request, reply) => {
-  return { status: "ok", message: "Backend is running" };
-});
+  // GET / route (health check)
+  fastify.get("/", async (request, reply) => {
+    return { status: "ok", message: "Backend is running" };
+  });
 
-// POST /compress route
-await fastify.register(compressRoutes);
+  // POST /compress route
+  await fastify.register(compressRoutes);
 
-try {
-  const port = process.env.PORT || 3000;
-  await fastify.listen({ port, host: "0.0.0.0" });
-} catch (err) {
-  fastify.log.error(err);
-  process.exit(1);
+  try {
+    const port = process.env.PORT || 3000;
+    await fastify.listen({ port, host: "0.0.0.0" });
+  } catch (err) {
+    fastify.log.error(err);
+    process.exit(1);
+  }
 }
+
+start();
