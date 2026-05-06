@@ -30,3 +30,13 @@ fastify.listen({ host: "0.0.0.0", port }, function (err, address) {
     process.exit(1);
   }
 });
+
+process.on("SIGTERM", (signal) => {
+  console.log(`Received ${signal} — shutting down`);
+  fastify.close(() => process.exit(0));
+});
+
+process.on("uncaughtException", (err) => {
+  console.error("Uncaught exception:", err);
+  process.exit(1);
+});
