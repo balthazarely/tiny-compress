@@ -24,7 +24,7 @@ fastify.get("/", async (request, reply) => {
 fastify.register(compressRoutes);
 
 const port = Number(process.env.PORT) || 3000;
-fastify.listen({ host: "::", port }, function (err, address) {
+fastify.listen({ host: "0.0.0.0", port }, function (err, address) {
   if (err) {
     fastify.log.error(err);
     process.exit(1);
