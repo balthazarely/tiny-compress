@@ -24,12 +24,23 @@ fastify.get("/", async (request, reply) => {
 // fastify.register(compressRoutes);
 
 const port = Number(process.env.PORT) || 3000;
-fastify.listen({ host: "0.0.0.0", port }, function (err, address) {
-  if (err) {
+// fastify.listen({ host: "0.0.0.0", port }, function (err, address) {
+//   if (err) {
+//     fastify.log.error(err);
+//     process.exit(1);
+//   }
+// });
+
+const start = async () => {
+  try {
+    await fastify.listen({ host: "0.0.0.0", port });
+  } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-});
+};
+
+start();
 
 process.on("SIGTERM", (signal) => {
   console.log(`Received ${signal} — shutting down`);
