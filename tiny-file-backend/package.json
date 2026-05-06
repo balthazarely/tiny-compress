@@ -11,6 +11,9 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "optionalDependencies": {
+    "@img/sharp-linux-x64": "^0.34.5"
+  },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
     "@fastify/multipart": "^10.0.0",
