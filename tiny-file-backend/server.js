@@ -15,6 +15,11 @@ await fastify.register(multipart, {
   },
 });
 
+// GET / route (health check)
+fastify.get("/", async (request, reply) => {
+  return { status: "ok", message: "Backend is running" };
+});
+
 // POST /compress route
 await fastify.register(compressRoutes);
 
