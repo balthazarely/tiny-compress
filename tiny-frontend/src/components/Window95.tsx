@@ -4,9 +4,10 @@ interface Window95Props {
   title: string;
   children: ReactNode;
   onClose?: () => void;
+  padding?: "p-0" | "p-1" | "p-4";
 }
 
-export function Window95({ title, children, onClose }: Window95Props) {
+export function Window95({ title, children, onClose, padding = "p-4" }: Window95Props) {
   return (
     <div
       style={{
@@ -89,9 +90,7 @@ export function Window95({ title, children, onClose }: Window95Props) {
       </div>
 
       {/* Content */}
-      <div className="p-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 80px)" }}>
-        {children}
-      </div>
+      <div className={padding}>{children}</div>
     </div>
   );
 }

@@ -15,7 +15,9 @@ interface HistoryProps {
 }
 
 export function History({ items, onSelectImage }: HistoryProps) {
-  if (items.length === 0) {
+  const safeItems = Array.isArray(items) ? items : [];
+
+  if (safeItems.length === 0) {
     return (
       <div style={{ padding: "12px", textAlign: "center" }}>
         <div className="text-xs">No recent images</div>
@@ -26,15 +28,13 @@ export function History({ items, onSelectImage }: HistoryProps) {
   return (
     <div
       style={{
-        backgroundColor: "#dfdfdf",
-        border: "1px solid",
-        borderColor: "#808080 #dfdfdf",
+        backgroundColor: "#ffffff",
         padding: "4px",
       }}
     >
-      <div className="text-xs font-bold mb-3">Recent Images:</div>
-      <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-        {items.map((item) => (
+      <div className="text-xs font-bold mb-2">Recent Images:</div>
+      <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
+        {safeItems.map((item) => (
           <div key={item.id} style={{ textAlign: "center" }}>
             <img
               src={`data:image/jpeg;base64,${item.file}`}
@@ -49,7 +49,7 @@ export function History({ items, onSelectImage }: HistoryProps) {
               }}
               title={item.filename}
             />
-            <div className="text-xs mt-1" style={{ maxWidth: "60px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div className="text-xs mt-0.5" style={{ maxWidth: "60px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {item.filename}
             </div>
           </div>

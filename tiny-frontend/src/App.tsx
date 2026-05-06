@@ -86,7 +86,8 @@ function App() {
         background: "#268786",
       }}
     >
-      <div className="flex items-center justify-center h-screen p-4">
+      <div className="flex flex-col items-center justify-start overflow-y-auto p-4 gap-4" style={{ height: "100vh" }}>
+        {/* Main Compressor Window */}
         <div className="w-full max-w-md">
           <Window95 title="Image Compressor" onClose={handleReset}>
             <div className="space-y-4">
@@ -113,7 +114,7 @@ function App() {
               </Button95>
 
               {/* Result Display Component */}
-              {result && (
+              {(isLoading || result) && (
                 <ResultDisplay
                   result={result}
                   isLoading={isLoading}
@@ -124,8 +125,17 @@ function App() {
                   onDownloadMouseLeave={() => setDownloadPressed(false)}
                 />
               )}
-              <History items={history} onSelectImage={handleSelectFromHistory} />
             </div>
+          </Window95>
+        </div>
+
+        {/* Recent Images Window */}
+        <div className="w-full max-w-md">
+          <Window95 title="Recent Images" padding="p-1">
+            <History
+              items={history}
+              onSelectImage={handleSelectFromHistory}
+            />
           </Window95>
         </div>
       </div>

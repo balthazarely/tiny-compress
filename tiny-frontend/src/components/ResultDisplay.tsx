@@ -8,7 +8,7 @@ interface ResultDisplayProps {
     compressedSize: number;
     file: string;
     fileType: string;
-  };
+  } | null;
   isLoading: boolean;
   onDownloadClick: () => void;
   downloadPressed: boolean;
@@ -26,10 +26,12 @@ export function ResultDisplay({
   onDownloadMouseUp,
   onDownloadMouseLeave,
 }: ResultDisplayProps) {
-  const reduction = (
-    ((result.originalSize - result.compressedSize) / result.originalSize) *
-    100
-  ).toFixed(0);
+  const reduction = result
+    ? (
+        ((result.originalSize - result.compressedSize) / result.originalSize) *
+        100
+      ).toFixed(0)
+    : "0";
 
   return (
     <div

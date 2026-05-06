@@ -58,8 +58,27 @@ export async function compressHandler(request, reply) {
   }
 
   if (!existing) {
-    // Only insert if it's a new file for this user
+    // Check if user has reached the limit (5 compressions)
+    const MAX_COMPRESSIONS_PER_USER = 5;
+
     if (isPostgres) {
+      const countResult = await db.query(
+        `SELECT COUNT(*) as count FROM compressions WHERE userId = $1`,
+        [userId]
+      );
+      const userCount = parseInt(countResult.rows[0].count);
+
+      if (userCount >= MAX_COMPRESSIONS_PER_USER) {
+        // Delete the oldest compression for this user
+        await db.query(
+          `DELETE FROM compressions WHERE userId = $1 AND id = (
+            SELECT id FROM compressions WHERE userId = $1 ORDER BY createdAt ASC LIMIT 1
+          )`,
+          [userId]
+        );
+      }
+
+      // Insert the new compression
       await db.query(
         `
         INSERT INTO compressions (userId, filename, originalSize, compressedSize, format, quality, file, fileHash)
@@ -77,6 +96,16 @@ export async function compressHandler(request, reply) {
         ]
       );
     } else {
+      const userCount = db.prepare(`SELECT COUNT(*) as count FROM compressions WHERE userId = ?`).get(userId).count;
+
+      if (userCount >= MAX_COMPRESSIONS_PER_USER) {
+        // Delete the oldest compression for this user
+        const oldest = db.prepare(`SELECT id FROM compressions WHERE userId = ? ORDER BY createdAt ASC LIMIT 1`).get(userId);
+        if (oldest) {
+          db.prepare(`DELETE FROM compressions WHERE id = ?`).run(oldest.id);
+        }
+      }
+
       db.prepare(
         `
         INSERT INTO compressions (userId, filename, originalSize, compressedSize, format, quality, file, fileHash)
