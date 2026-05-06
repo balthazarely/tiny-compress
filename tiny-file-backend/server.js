@@ -1,7 +1,7 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
-// import compressRoutes from "./routes/compress.js";
+import compressRoutes from "./routes/compress.js";
 
 const fastify = Fastify({
   logger: true,
@@ -21,15 +21,9 @@ fastify.get("/", async (request, reply) => {
 });
 
 // POST /compress route
-// fastify.register(compressRoutes);
+fastify.register(compressRoutes);
 
 const port = Number(process.env.PORT) || 3000;
-// fastify.listen({ host: "0.0.0.0", port }, function (err, address) {
-//   if (err) {
-//     fastify.log.error(err);
-//     process.exit(1);
-//   }
-// });
 
 const start = async () => {
   try {
