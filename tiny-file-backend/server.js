@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import "./db.js";
 import compressRoutes from "./routes/compress.js";
+import historyRoutes from "./routes/history.js";
 
 const fastify = Fastify({
   logger: true,
@@ -21,8 +22,9 @@ fastify.get("/", async (request, reply) => {
   return { status: "ok", message: "Backend is running" };
 });
 
-// POST /compress and GET /history routes
+// Routes
 fastify.register(compressRoutes);
+fastify.register(historyRoutes);
 
 const port = Number(process.env.PORT) || 3000;
 

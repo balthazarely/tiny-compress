@@ -12,7 +12,7 @@ import { getOrCreateUserId } from "./utils/userId";
 function App() {
   const [userId] = useState(getOrCreateUserId());
   const { compress, isLoading } = useCompress(userId);
-  const { getHistory, history } = useHistory(userId);
+  const { getHistory, history, isLoading: historyIsLoading } = useHistory(userId);
 
   useEffect(() => {
     getHistory();
@@ -29,6 +29,10 @@ function App() {
     if (e.target.files) {
       setSelectedFile(e.target.files[0]);
     }
+  }
+
+  function handleClearFile() {
+    setSelectedFile(null);
   }
 
   async function handleCompressor() {
@@ -86,10 +90,10 @@ function App() {
         background: "#268786",
       }}
     >
-      <div className="flex flex-col items-center justify-start overflow-y-auto p-4 gap-4" style={{ height: "100vh" }}>
+      <div className="flex flex-col items-center justify-center overflow-y-auto p-4 gap-4" style={{ height: "100vh" }}>
         {/* Main Compressor Window */}
         <div className="w-full max-w-md">
-          <Window95 title="Image Compressor" onClose={handleReset}>
+          <Window95 title="Image Compressor" onClose={handleReset} icon="🖼️">
             <div className="space-y-4">
               {/* File Selector Component */}
               <FileSelector
@@ -99,6 +103,7 @@ function App() {
                 onFileChange={handleFileChange}
                 onFormatChange={setFormat}
                 onQualityChange={setQuality}
+                onClearFile={handleClearFile}
               />
 
               {/* Compress Button */}
@@ -129,14 +134,13 @@ function App() {
           </Window95>
         </div>
 
-        {/* Recent Images Window */}
+        {/* Recent Images Desktop Icons */}
         <div className="w-full max-w-md">
-          <Window95 title="Recent Images" padding="p-1">
-            <History
-              items={history}
-              onSelectImage={handleSelectFromHistory}
-            />
-          </Window95>
+          <History
+            items={history}
+            onSelectImage={handleSelectFromHistory}
+            isLoading={historyIsLoading}
+          />
         </div>
       </div>
     </div>

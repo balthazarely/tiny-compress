@@ -19,7 +19,7 @@ export function ImagePreview({ fileType, file }: ImagePreviewProps) {
         borderColor: "#808080 #dfdfdf",
         padding: "4px",
         cursor: imageHovered ? "crosshair" : "zoom-in",
-        height: "300px",
+        height: "200px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -42,7 +42,7 @@ export function ImagePreview({ fileType, file }: ImagePreviewProps) {
         alt="Compressed"
         style={{
           width: "100%",
-          maxHeight: "300px",
+          maxHeight: "200px",
           objectFit: "contain",
           transform: imageHovered
             ? `scale(6) translate(${(50 - mousePos.x) * 0.015}px, ${

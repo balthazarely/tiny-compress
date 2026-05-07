@@ -1,3 +1,5 @@
+import loaderGif from "../assets/loader.gif";
+
 export interface HistoryItem {
   id: number;
   filename: string;
@@ -12,48 +14,82 @@ export interface HistoryItem {
 interface HistoryProps {
   items: HistoryItem[];
   onSelectImage?: (item: HistoryItem) => void;
+  isLoading?: boolean;
 }
 
-export function History({ items, onSelectImage }: HistoryProps) {
+export function History({ items, onSelectImage, isLoading = false }: HistoryProps) {
   const safeItems = Array.isArray(items) ? items : [];
 
-  if (safeItems.length === 0) {
+  if (isLoading) {
     return (
-      <div style={{ padding: "12px", textAlign: "center" }}>
-        <div className="text-xs">No recent images</div>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px" }}>
+        <div style={{ color: "#ffffff", fontSize: "12px", fontWeight: "bold", marginBottom: "16px", textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>
+          Loading...
+        </div>
+        <img src={loaderGif} alt="Loading" style={{ width: "40px", height: "40px" }} />
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: "#ffffff",
-        padding: "4px",
-      }}
-    >
-      <div className="text-xs font-bold mb-2">Recent Images:</div>
-      <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-        {safeItems.map((item) => (
-          <div key={item.id} style={{ textAlign: "center" }}>
-            <img
-              src={`data:image/jpeg;base64,${item.file}`}
-              alt={item.filename}
-              onClick={() => onSelectImage?.(item)}
+    <div>
+      <div style={{ color: "#ffffff", fontSize: "12px", fontWeight: "bold", marginBottom: "8px", textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>
+        Recent Images:
+      </div>
+      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", padding: "8px", justifyContent: "center" }}>
+      {safeItems.map((item) => {
+        const truncatedName = item.filename.length > 12 ? item.filename.substring(0, 12) + "..." : item.filename;
+        return (
+          <div
+            key={item.id}
+            onClick={() => onSelectImage?.(item)}
+            style={{
+              textAlign: "center",
+              cursor: "pointer",
+              userSelect: "none",
+            }}
+          >
+            <div
               style={{
-                width: "60px",
-                height: "60px",
-                objectFit: "cover",
-                border: "1px solid #808080",
-                cursor: "pointer",
+                width: "64px",
+                height: "64px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "4px",
+                backgroundColor: "transparent",
+                border: "1px solid transparent",
+                padding: "2px",
               }}
-              title={item.filename}
-            />
-            <div className="text-xs mt-0.5" style={{ maxWidth: "60px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {item.filename}
+            >
+              <img
+                src={`data:image/jpeg;base64,${item.file}`}
+                alt={item.filename}
+                style={{
+                  width: "48px",
+                  height: "48px",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                }}
+                title={item.filename}
+              />
+            </div>
+            <div
+              className="text-xs"
+              style={{
+                maxWidth: "64px",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                color: "#ffffff",
+                textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+              }}
+            >
+              {truncatedName}
             </div>
           </div>
-        ))}
+        );
+      })}
       </div>
     </div>
   );
