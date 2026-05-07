@@ -10,6 +10,7 @@ interface ResultDisplayProps {
     fileType: string;
   } | null;
   isLoading: boolean;
+  originalBuffer: File | null;
   onDownloadClick: () => void;
   downloadPressed: boolean;
   onDownloadMouseDown: () => void;
@@ -20,6 +21,7 @@ interface ResultDisplayProps {
 export function ResultDisplay({
   result,
   isLoading,
+  originalBuffer,
   onDownloadClick,
   downloadPressed,
   onDownloadMouseDown,
@@ -47,11 +49,11 @@ export function ResultDisplay({
           <div className="text-xs font-bold mb-4">Compressing...</div>
           <img src={loaderGif} alt="Loading" style={{ width: "40px", height: "40px", margin: "0 auto" }} />
         </div>
-      ) : (
+      ) : result && (
         <>
           <div className="text-xs font-bold mb-2">Compression Complete!</div>
 
-          <ImagePreview fileType={result.fileType} file={result.file} />
+          <ImagePreview fileType={result.fileType} file={result.file} originalBuffer={originalBuffer} />
 
           <div className="text-xs space-y-1 mb-4">
             <div>Original: {(result.originalSize / 1024).toFixed(1)} KB</div>

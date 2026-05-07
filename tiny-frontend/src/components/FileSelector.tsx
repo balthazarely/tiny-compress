@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface FileSelectorProps {
   selectedFile: File | null;
@@ -8,6 +8,7 @@ interface FileSelectorProps {
   onFormatChange: (format: string) => void;
   onQualityChange: (quality: number) => void;
   onClearFile?: () => void;
+  fileInputRef?: React.RefObject<HTMLInputElement | null>;
 }
 
 export function FileSelector({
@@ -18,8 +19,11 @@ export function FileSelector({
   onFormatChange,
   onQualityChange,
   onClearFile,
+  fileInputRef: externalRef,
 }: FileSelectorProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const localRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = externalRef || localRef;
 
   useEffect(() => {
     if (selectedFile) {
@@ -33,6 +37,13 @@ export function FileSelector({
     }
   }, [selectedFile]);
 
+  const handleClearFile = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    onClearFile?.();
+  };
+
   return (
     <div className="space-y-4">
       {/* File Input */}
@@ -41,6 +52,7 @@ export function FileSelector({
           Select Image or Drop Image Here:
         </label>
         <input
+          ref={fileInputRef}
           type="file"
           accept="image/*"
           onChange={onFileChange}
@@ -80,7 +92,7 @@ export function FileSelector({
             <span className="text-xs">✓ {selectedFile.name}</span>
           </div>
           <button
-            onClick={onClearFile}
+            onClick={handleClearFile}
             style={{
               backgroundColor: "#c0c0c0",
               border: "1px solid",

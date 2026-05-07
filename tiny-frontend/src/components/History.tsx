@@ -1,3 +1,4 @@
+import { useState } from "react";
 import loaderGif from "../assets/loader.gif";
 
 export interface HistoryItem {
@@ -19,6 +20,7 @@ interface HistoryProps {
 
 export function History({ items, onSelectImage, isLoading = false }: HistoryProps) {
   const safeItems = Array.isArray(items) ? items : [];
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   if (isLoading) {
     return (
@@ -32,21 +34,28 @@ export function History({ items, onSelectImage, isLoading = false }: HistoryProp
   }
 
   return (
-    <div>
-      <div style={{ color: "#ffffff", fontSize: "12px", fontWeight: "bold", marginBottom: "8px", textShadow: "1px 1px 2px rgba(0,0,0,0.5)" }}>
-        Recent Images:
-      </div>
-      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", padding: "8px", justifyContent: "center" }}>
+    <div
+      style={{ display: "flex", gap: "16px", flexWrap: "wrap", padding: "8px", justifyContent: "center" }}
+      onClick={() => setSelectedId(null)}
+    >
       {safeItems.map((item) => {
         const truncatedName = item.filename.length > 12 ? item.filename.substring(0, 12) + "..." : item.filename;
+        const isSelected = selectedId === item.id;
         return (
           <div
             key={item.id}
-            onClick={() => onSelectImage?.(item)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedId(item.id);
+            }}
+            onDoubleClick={() => onSelectImage?.(item)}
             style={{
               textAlign: "center",
               cursor: "pointer",
               userSelect: "none",
+              padding: "4px",
+              borderRadius: "2px",
+              backgroundColor: isSelected ? "#000080" : "transparent",
             }}
           >
             <div
@@ -57,9 +66,6 @@ export function History({ items, onSelectImage, isLoading = false }: HistoryProp
                 alignItems: "center",
                 justifyContent: "center",
                 marginBottom: "4px",
-                backgroundColor: "transparent",
-                border: "1px solid transparent",
-                padding: "2px",
               }}
             >
               <img
@@ -81,8 +87,7 @@ export function History({ items, onSelectImage, isLoading = false }: HistoryProp
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                color: "#ffffff",
-                textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+                color: isSelected ? "#ffffff" : "#000000",
               }}
             >
               {truncatedName}
@@ -90,7 +95,6 @@ export function History({ items, onSelectImage, isLoading = false }: HistoryProp
           </div>
         );
       })}
-      </div>
     </div>
   );
 }
